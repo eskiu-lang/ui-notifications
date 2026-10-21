@@ -35,6 +35,9 @@ In an app made with `ui new`:
 eskiuc add notifications --git https://github.com/eskiu-lang/ui-notifications
 ```
 
+With Eskiu 0.12.0, run `eskiuc fetch` after adding it if `ui` was fetched before on this
+machine: 0.12.0 can resolve `ui` to the commit it fetched then (fixed in 0.13).
+
 Its `ui.toml` brings the UserNotifications framework on iOS, and on Android the
 `POST_NOTIFICATIONS` permission and the receiver that posts a notification when its alarm goes
 off.
