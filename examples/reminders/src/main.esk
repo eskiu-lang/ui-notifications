@@ -3,7 +3,7 @@
 import "reminders.esk";
 
 void ui_app_start(int which) {
-    ui_mount(void() { Reminders(); });
+    ui_mount() { Reminders(); }
 }
 
 void ui_app_stop() {}

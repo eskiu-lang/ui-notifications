@@ -44,7 +44,7 @@ void check(bool ok, string what) {
 *Signal<int> mounted;
 
 void Screen() {
-    Scope("Screen", Key{}, void() {
+    Scope("Screen", Key{}) {
         int permission = use_notification_permission();
         use_notification_opened(void(string id) {
             if (opened_ids.len > 0) { String_append(&opened_ids, ","); }
@@ -54,7 +54,7 @@ void Screen() {
         else if (permission == NotificationsDenied) { Text("denied"); }
         else if (permission == NotificationsNotAsked) { Text("not asked"); }
         else { Text("checking"); }
-    });
+    }
 }
 
 int main() {
@@ -71,9 +71,9 @@ int main() {
     // The app was opened by a notification before any component listened.
     String_from(&pending, "launch");
     mounted = signal_new<int>(1);
-    ui_mount(void() {
+    ui_mount() {
         if (mounted.get() > 0) { Screen(); }
-    });
+    }
     ui_frame();
     check(checks == 1, "the permission is checked when mounted");
     check(String_eq_cstr(&shown, "checking") == 1, "checking until the platform answers");

@@ -29,39 +29,38 @@ void ReminderRow(int i, *Signal<int> on) {
     Reminder r = reminder(i);
     bool scheduled = (on.get() & (1 << i)) != 0;
     Row(Style{key: key(i), padding: 14, gap: 14, radius: 18, background: card(), border_width: 1, border_color: line(),
-              align: AlignCenter, label: r.title}, void() {
-        Row(Style{width: 46, height: 46, radius: 14, background: r.soft, align: AlignCenter, justify: JustifyCenter},
-            void() { TextWith(Style{font_size: 24}, r.icon); });
-        Column(Style{grow: 1, gap: 2}, void() {
+              align: AlignCenter, label: r.title}) {
+        Row(Style{width: 46, height: 46, radius: 14, background: r.soft, align: AlignCenter, justify: JustifyCenter}) { TextWith(Style{font_size: 24}, r.icon); }
+        Column(Style{grow: 1, gap: 2}) {
             TextWith(Style{font_size: 17, font_weight: 700, color: ink()}, r.title);
             TextWith(Style{font_size: 14, color: scheduled ? violet() : muted()}, scheduled ? r.when : "Off");
-        });
+        }
         Switch(Style{}, scheduled, void(bool value) {
             if (value) { notification_schedule(r.id, r.title, r.body, r.seconds); }
             else { notification_cancel(r.id); }
             on.set(value ? on.value | (1 << i) : on.value & ~(1 << i));
         });
-    });
+    }
 }
 
 void PermissionCard(int permission) {
-    Column(Style{padding: 20, gap: 12, radius: 22, background: violet(), shadow: 10}, void() {
+    Column(Style{padding: 20, gap: 12, radius: 22, background: violet(), shadow: 10}) {
         TextWith(Style{font_size: 20, font_weight: 800, color: rgb(255, 255, 255)},
             permission == NotificationsDenied ? "Notifications are off" : "Turn on notifications");
         TextWith(Style{font_size: 15, color: rgba(255, 255, 255, 215)},
             permission == NotificationsDenied ? "Allow them for Reminders in the system's settings to get your reminders."
                                               : "Reminders tells you when it is time, even when the app is closed.");
         if (permission != NotificationsDenied) {
-            Row(Style{}, void() {
+            Row(Style{}) {
                 ButtonWith(Style{padding: 12, radius: 12, background: rgb(255, 255, 255), color: violet(), font_weight: 700},
-                    "Allow notifications", void() { notifications_ask(); });
-            });
+                    "Allow notifications") { notifications_ask(); }
+            }
         }
-    });
+    }
 }
 
 void Reminders() {
-    Column(Style{grow: 1, background: page(), gap: 0}, void() {
+    Column(Style{grow: 1, background: page(), gap: 0}) {
         StatusBar(BarDark, false);
         int permission = use_notification_permission();
         *Signal<int> on = use_signal<int>(0);
@@ -77,26 +76,26 @@ void Reminders() {
                 }
             }
         });
-        Scroll(Style{grow: 1, padding: 20, gap: 16}, void() {
-            Row(Style{align: AlignCenter, gap: 12}, void() {
-                Column(Style{grow: 1, gap: 2}, void() {
+        Scroll(Style{grow: 1, padding: 20, gap: 16}) {
+            Row(Style{align: AlignCenter, gap: 12}) {
+                Column(Style{grow: 1, gap: 2}) {
                     TextWith(Style{font_size: 15, color: muted()}, "Today");
                     TextWith(Style{font_size: 34, font_weight: 800, color: ink()}, "Reminders");
-                });
+                }
                 String count;
                 defer String_free(&count);
                 int n = 0;
                 for (i in 0..kReminders) { if ((on.get() & (1 << i)) != 0) { n++; } }
                 String_format(&count, "%d on", n);
-                Row(Style{padding: 8, radius: 999, background: violet_soft()}, void() {
+                Row(Style{padding: 8, radius: 999, background: violet_soft()}) {
                     TextWith(Style{font_size: 13, font_weight: 700, color: violet()}, count.data);
-                });
-            });
+                }
+            }
             if (permission == NotificationsNotAsked || permission == NotificationsDenied) { PermissionCard(permission); }
-            Column(Style{gap: 10}, void() { for (i in 0..kReminders) { ReminderRow(i, on); } });
+            Column(Style{gap: 10}) { for (i in 0..kReminders) { ReminderRow(i, on); } }
             TextWith(Style{font_size: 14, color: muted()},
                 "The first one arrives in ten seconds: switch it on, then leave the app or lock the screen.");
-        });
+        }
         ToastHost();
-    });
+    }
 }

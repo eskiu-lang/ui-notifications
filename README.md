@@ -49,16 +49,16 @@ import <ui/kit>;
 import <notifications>;
 
 void Tea() {
-    Column(Style{padding: 20, gap: 12}, void() {
+    Column(Style{padding: 20, gap: 12}) {
         int permission = use_notification_permission();
         use_notification_opened(void(string id) { kit_toast("Your tea is ready"); });
         if (permission != NotificationsAllowed) {
-            Button("Allow notifications", void() { notifications_ask(); });
+            Button("Allow notifications") { notifications_ask(); }
         }
-        Button("Remind me in four minutes", void() {
+        Button("Remind me in four minutes") {
             notification_schedule("tea", "Tea is ready", "Take the leaves out.", 240);
-        });
-    });
+        }
+    }
 }
 ```
 
