@@ -1,0 +1,3 @@
+# eskiu.lock: written by eskiuc (eskiuc fetch updates it); do not edit.
+notifications	root	.
+ui	git	https://github.com/eskiu-lang/ui	HEAD	4af0398357947e457e92edd3a5fac826b9251f2f

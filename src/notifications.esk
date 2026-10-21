@@ -1,0 +1,88 @@
+// <notifications>: local notifications for apps on eskiu-lang/ui. The app schedules one with
+// a title and a body for a number of seconds from now; the system shows it then, also when the
+// app is in the background or closed, and tells the app when the user opens it. The platform's
+// own service keeps them: UNUserNotificationCenter on iOS, AlarmManager and NotificationManager
+// on Android, the Notification API on the web (there only while the page is open).
+import <string>;
+import <ui>;
+
+enum NotificationPermission { NotificationsChecking, NotificationsNotAsked, NotificationsAllowed, NotificationsDenied }
+
+// The platform's side (native/ios, native/android, native/web). check and request answer on
+// the "notifications" channel with "permission allowed", "permission denied" or "permission
+// notasked"; a notification the user opens sends "opened ID". take_opened returns, once, the id
+// of a notification that opened the app before any component listened ("" for none).
+extern void notifications_check();
+extern void notifications_request();
+extern void notifications_native_schedule(string id, string title, string body, int seconds);
+extern void notifications_native_cancel(string id);
+extern string notifications_take_opened();
+
+// What the platform said last about the permission.
+int notifications_permission;
+
+// A message on the "notifications" channel about the permission into notifications_permission;
+// false for any other message.
+bool notifications_read_permission(string payload) {
+    if (payload == null || strncmp(payload, "permission ", 11) != 0) { return false; }
+    string value = &payload[11];
+    if (strcmp(value, "allowed") == 0) { notifications_permission = NotificationsAllowed; }
+    else if (strcmp(value, "denied") == 0) { notifications_permission = NotificationsDenied; }
+    else { notifications_permission = NotificationsNotAsked; }
+    return true;
+}
+
+// Whether the app may show notifications, while the scope is mounted: NotificationsChecking
+// until the platform answers, then NotificationsNotAsked, NotificationsAllowed or
+// NotificationsDenied. The scope renders again when it changes.
+int use_notification_permission() {
+    *Signal<int> updates = use_signal<int>(0);
+    use_native_event("notifications", void(string payload) {
+        if (notifications_read_permission(payload)) { updates.set(updates.value + 1); }
+    });
+    use_mount(void() { notifications_check(); }, void() {});
+    updates.get();
+    return notifications_permission;
+}
+
+// Ask the user to allow notifications (the system asks once; after that it answers with what
+// the user chose). The answer reaches use_notification_permission.
+void notifications_ask() { notifications_request(); }
+
+// Show a notification `seconds` from now (at least 1), with `id` to cancel or replace it: one
+// scheduled with the same id replaces it. Without the permission the system drops it.
+void notification_schedule(string id, string title, string body, int seconds) {
+    notifications_native_schedule(id, title, body == null ? "" : body, seconds < 1 ? 1 : seconds);
+}
+
+// Cancel a scheduled notification, and take it away if it is showing.
+void notification_cancel(string id) { notifications_native_cancel(id); }
+
+// The latest render's handler, kept in the hook's slot.
+struct NotificationOpened { fn(string)->void handler; }
+
+// `on_open` gets the id of each notification the user opens while the scope is mounted, and,
+// when it mounts, the one that opened the app, if any (only the first handler to mount gets
+// that one).
+void use_notification_opened(escaping fn(string)->void on_open) {
+    static int tag;
+    *Slot slot = ui_slot(10, &tag);
+    *NotificationOpened held = (*NotificationOpened)slot.data;
+    if (held == null) {
+        held = alloc<NotificationOpened>(1);
+        slot.data = held;
+        slot.dispose = void() { ui_release_payload(held.handler); free(held); };
+    } else { ui_release_payload(held.handler); }
+    held.handler = on_open;
+    use_native_event("notifications", void(string payload) {
+        if (payload != null && strncmp(payload, "opened ", 7) == 0) {
+            // Handled here: the platform no longer keeps it for a handler that mounts later.
+            notifications_take_opened();
+            held.handler(&payload[7]);
+        }
+    });
+    use_mount(void() {
+        string id = notifications_take_opened();
+        if (id != null && id[0] != 0) { held.handler(id); }
+    }, void() {});
+}

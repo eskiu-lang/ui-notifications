@@ -1,0 +1,7 @@
+# What an app that depends on this package gets.
+[ios]
+frameworks = ["UserNotifications"]
+
+[android]
+permissions = ["android.permission.POST_NOTIFICATIONS"]
+receivers = ["org.eskiu.notifications.NotificationAlarm"]

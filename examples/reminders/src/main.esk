@@ -1,0 +1,9 @@
+// Reminders: a few reminders to schedule as local notifications, and what happens when one
+// is opened. `ui run ios` (or android, web).
+import "reminders.esk";
+
+void ui_app_start(int which) {
+    ui_mount(void() { Reminders(); });
+}
+
+void ui_app_stop() {}

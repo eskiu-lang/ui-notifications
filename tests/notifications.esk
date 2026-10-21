@@ -1,0 +1,118 @@
+// <notifications> with no device: the platform's side is stand-ins that record their calls,
+// and the test sends the events a platform would. Each check that fails exits with 1.
+import <io>;
+import <string>;
+import <ui>;
+import <notifications>;
+
+int checks;
+int requests;
+String scheduled;
+String cancelled;
+// What notifications_take_opened hands out once.
+String pending;
+String handed;
+
+void notifications_check() { checks++; }
+
+void notifications_request() { requests++; }
+
+void notifications_native_schedule(string id, string title, string body, int seconds) {
+    String_clear(&scheduled);
+    String_format(&scheduled, "%s|%s|%s|%d", id, title, body, seconds);
+}
+
+void notifications_native_cancel(string id) { String_from(&cancelled, id); }
+
+string notifications_take_opened() {
+    String_from(&handed, pending.data == null ? "" : pending.data);
+    String_clear(&pending);
+    return handed.data;
+}
+
+String shown;
+String opened_ids;
+
+void check(bool ok, string what) {
+    if (!ok) {
+        printf("FAIL %s (shown: %s, opened: %s)\n", what, shown.data == null ? "" : shown.data,
+               opened_ids.data == null ? "" : opened_ids.data);
+        exit(1);
+    }
+}
+
+*Signal<int> mounted;
+
+void Screen() {
+    Scope("Screen", Key{}, void() {
+        int permission = use_notification_permission();
+        use_notification_opened(void(string id) {
+            if (opened_ids.len > 0) { String_append(&opened_ids, ","); }
+            String_append(&opened_ids, id);
+        });
+        if (permission == NotificationsAllowed) { Text("allowed"); }
+        else if (permission == NotificationsDenied) { Text("denied"); }
+        else if (permission == NotificationsNotAsked) { Text("not asked"); }
+        else { Text("checking"); }
+    });
+}
+
+int main() {
+    Ui runtime;
+    ui_init(&runtime, void(*uint8 data, int len) {
+        List<Mutation> items;
+        ui_decode(data, len, &items);
+        for (i in 0..items.size) {
+            if (items.data[i].op == 3) { String_from(&shown, items.data[i].text); }
+        }
+        items.free();
+        ui_complete(ui.sequence);
+    });
+    // The app was opened by a notification before any component listened.
+    String_from(&pending, "launch");
+    mounted = signal_new<int>(1);
+    ui_mount(void() {
+        if (mounted.get() > 0) { Screen(); }
+    });
+    ui_frame();
+    check(checks == 1, "the permission is checked when mounted");
+    check(String_eq_cstr(&shown, "checking") == 1, "checking until the platform answers");
+    check(String_eq_cstr(&opened_ids, "launch") == 1, "the notification that opened the app");
+
+    ui_event_native("notifications", "permission notasked");
+    ui_frame();
+    check(String_eq_cstr(&shown, "not asked") == 1, "not asked yet");
+    notifications_ask();
+    check(requests == 1, "asking calls the platform");
+    ui_event_native("notifications", "permission allowed");
+    ui_frame();
+    check(String_eq_cstr(&shown, "allowed") == 1, "allowed renders");
+
+    notification_schedule("tea", "Tea is ready", "Four minutes are up", 0);
+    check(String_eq_cstr(&scheduled, "tea|Tea is ready|Four minutes are up|1") == 1, "a schedule, at least a second away");
+    notification_schedule("x", "Title", null, 30);
+    check(String_eq_cstr(&scheduled, "x|Title||30") == 1, "no body is an empty one");
+    notification_cancel("tea");
+    check(String_eq_cstr(&cancelled, "tea") == 1, "cancel");
+
+    // Opened while running: the handler gets it, and it is not handed out again later.
+    String_from(&pending, "tap");
+    ui_event_native("notifications", "opened tap");
+    ui_frame();
+    check(String_eq_cstr(&opened_ids, "launch,tap") == 1, "a notification opened while running");
+    mounted.set(0);
+    ui_frame();
+    mounted.set(1);
+    ui_frame();
+    check(String_eq_cstr(&opened_ids, "launch,tap") == 1, "a handled one is not handed out again");
+
+    ui_event_native("notifications", "permission denied");
+    ui_frame();
+    check(String_eq_cstr(&shown, "denied") == 1, "denied renders");
+    ui_shutdown();
+    mounted.free();
+    printf("PASS notifications\n");
+    String_free(&shown); String_free(&opened_ids); String_free(&scheduled); String_free(&cancelled);
+    String_free(&pending); String_free(&handed);
+    return 0;
+}

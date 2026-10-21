@@ -1,0 +1,8 @@
+[package]
+name = "reminders"
+version = "0.1.0"
+main = "src/main.esk"
+
+[deps]
+ui = { git = "https://github.com/eskiu-lang/ui" }
+notifications = { path = "../.." }
