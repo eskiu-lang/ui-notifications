@@ -42,6 +42,7 @@ off.
 ## Use it
 
 ```eskiu
+import <ui/kit>;
 import <notifications>;
 
 void Tea() {
