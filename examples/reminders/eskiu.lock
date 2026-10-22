@@ -1,4 +1,4 @@
 # eskiu.lock: written by eskiuc (eskiuc fetch updates it); do not edit.
 notifications	path	../..
 reminders	root	.
-ui	git	https://github.com/eskiu-lang/ui	HEAD	11f356bbcc1594a14cb5813e62b2b6dbe72e455f
+ui	git	https://github.com/eskiu-lang/ui	v0.1.1	1f7bbcb52e0e7f9e3e4956d9666e2a55aacc3ef1

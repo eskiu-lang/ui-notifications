@@ -32,7 +32,7 @@ iOS, `AlarmManager` and `NotificationManager` on Android, and the Notification A
 In an app made with `ui new`:
 
 ```bash
-eskiuc add notifications --git https://github.com/eskiu-lang/ui-notifications --rev v0.1.0
+eskiuc add notifications --git https://github.com/eskiu-lang/ui-notifications --rev v0.1.1
 ```
 
 Its `ui.toml` brings the UserNotifications framework on iOS, and on Android the
