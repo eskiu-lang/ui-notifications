@@ -6,6 +6,8 @@
 import <string>;
 import <ui>;
 
+// Whether the app may show notifications: not known yet (the platform has not answered),
+// never asked, allowed, or denied.
 enum NotificationPermission { NotificationsChecking, NotificationsNotAsked, NotificationsAllowed, NotificationsDenied }
 
 // The platform's side (native/ios, native/android, native/web). check and request answer on
