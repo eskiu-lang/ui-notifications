@@ -94,6 +94,10 @@ platform's side: the permission as it is checked and asked, schedules and cancel
 notification that opened the app, one opened while the app runs, and that one handled is not
 handed out again.
 
+## Documentation
+
+Every public function and type, with its documentation, is in the [API reference](docs/api.md).
+
 ## License
 
 MIT
