@@ -1,4 +1,4 @@
-// <notifications>: local notifications for apps on eskiu-lang/ui. The app schedules one with
+// <notifications>: local notifications for apps on eskiu-packages/ui. The app schedules one with
 // a title and a body for a number of seconds from now; the system shows it then, also when the
 // app is in the background or closed, and tells the app when the user opens it. The platform's
 // own service keeps them: UNUserNotificationCenter on iOS, AlarmManager and NotificationManager
