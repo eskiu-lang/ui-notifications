@@ -14,7 +14,7 @@
 
 <p align="center">
   <a href="https://github.com/eskiu-packages/ui-notifications/actions/workflows/ci.yml"><img src="https://github.com/eskiu-packages/ui-notifications/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-  <img src="https://img.shields.io/badge/version-0.1.3-6448d4" alt="Version 0.1.3">
+  <img src="https://img.shields.io/badge/version-0.1.4-6448d4" alt="Version 0.1.4">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue" alt="License: MIT"></a>
 </p>
 
@@ -32,7 +32,7 @@ iOS, `AlarmManager` and `NotificationManager` on Android, and the Notification A
 In an app made with `ui new`:
 
 ```bash
-eskiuc add notifications --git https://github.com/eskiu-packages/ui-notifications --rev v0.1.3
+eskiuc add notifications --git https://github.com/eskiu-packages/ui-notifications --rev v0.1.4
 ```
 
 Its `ui.toml` brings the UserNotifications framework on iOS, and on Android the
