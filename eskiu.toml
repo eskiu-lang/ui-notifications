@@ -1,6 +1,6 @@
 [package]
 name = "notifications"
-version = "0.1.4"
+version = "0.1.5"
 
 [deps]
-ui = { git = "https://github.com/eskiu-packages/ui", rev = "v0.6.1" }
+ui = { git = "https://github.com/eskiu-packages/ui", rev = "v0.7.0" }
