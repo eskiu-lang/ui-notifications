@@ -1,8 +1,10 @@
 // <notifications>: local notifications for apps on eskiu-packages/ui. The app schedules one with
 // a title and a body for a number of seconds from now; the system shows it then, also when the
 // app is in the background or closed, and tells the app when the user opens it. The platform's
-// own service keeps them: UNUserNotificationCenter on iOS, AlarmManager and NotificationManager
-// on Android, the Notification API on the web (there only while the page is open).
+// own service keeps them: UNUserNotificationCenter on iOS and macOS, AlarmManager and
+// NotificationManager on Android, the Notification API on the web, the desktop's notification
+// server on Linux and a notification area balloon on Windows (on the web, Linux and Windows a
+// scheduled one shows only while the app runs).
 import <string>;
 import <ui>;
 
@@ -10,7 +12,8 @@ import <ui>;
 // never asked, allowed, or denied.
 enum NotificationPermission { NotificationsChecking, NotificationsNotAsked, NotificationsAllowed, NotificationsDenied }
 
-// The platform's side (native/ios, native/android, native/web). check and request answer on
+// The platform's side (native/ios, native/android, native/web, native/macos, native/linux,
+// native/windows). check and request answer on
 // the "notifications" channel with "permission allowed", "permission denied" or "permission
 // notasked"; a notification the user opens sends "opened ID". take_opened returns, once, the id
 // of a notification that opened the app before any component listened ("" for none).

@@ -23,7 +23,20 @@
 The app schedules a notification with a title and a body for a number of seconds from now. The
 system shows it then, also when the app is in the background or closed, and tells the app
 when the user opens it. Each platform's own service keeps them: `UNUserNotificationCenter` on
-iOS, `AlarmManager` and `NotificationManager` on Android, and the Notification API on the web.
+iOS and macOS, `AlarmManager` and `NotificationManager` on Android, the Notification API on
+the web, the desktop's notification server on Linux and a notification area balloon on
+Windows. On the web, Linux and Windows a scheduled notification shows only while the app runs.
+
+| Platform | Shows it with | While the app is closed |
+|---|---|---|
+| iOS, macOS | `UNUserNotificationCenter` | yes |
+| Android | `AlarmManager` and `NotificationManager` | yes |
+| Web | the Notification API | no |
+| Linux | `org.freedesktop.Notifications` over D-Bus | no |
+| Windows | a balloon from the app's notification area icon (not a toast) | no |
+
+[docs/README.md](docs/README.md#platforms) has the details, the permission on each desktop
+among them.
 
 ![The Reminders example: iOS asking for permission, a notification over the app on Android, and the app on the web after one was opened](assets/reminders.png)
 
@@ -35,7 +48,7 @@ In an app made with `ui new`:
 eskiuc add notifications --git https://github.com/eskiu-packages/ui-notifications --rev v0.1.5
 ```
 
-Its `ui.toml` brings the UserNotifications framework on iOS, and on Android the
+Its `ui.toml` brings the UserNotifications framework on iOS and macOS, and on Android the
 `POST_NOTIFICATIONS` permission and the receiver that posts a notification when its alarm goes
 off.
 
