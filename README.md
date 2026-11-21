@@ -74,7 +74,7 @@ void Tea() {
 
 | Name | What it is |
 |---|---|
-| `notifications_supported()` | Whether the platform can show notifications (iOS, Android, a browser with the Notification API; not the desktop), before asking. It does not ask. |
+| `notifications_supported()` | Whether the platform can show notifications (iOS, Android, macOS, Windows, a browser with the Notification API, Linux with a session bus), before asking. It does not ask. |
 | `use_notification_permission()` | Whether the app may show notifications, while the scope is mounted: `NotificationsChecking` until the platform answers, then `NotificationsNotAsked`, `NotificationsAllowed` or `NotificationsDenied`. The scope renders again when it changes. |
 | `notifications_ask()` | Ask the user. The system asks once; after that it answers with what the user chose (change it in the system's settings). |
 | `notification_schedule(id, title, body, seconds)` | Show a notification `seconds` from now (at least 1). One scheduled with the same `id` replaces it. |

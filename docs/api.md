@@ -31,9 +31,10 @@ bool notifications_supported()
 ```
 
 Whether the platform can show this package's notifications, known before asking: true on
-iOS and Android, in a browser with the Notification API (there only while the page is open),
-false on the desktop. True does not mean the user allowed them: use_notification_permission
-says that.
+iOS, Android, macOS and Windows, in a browser with the Notification API, and on Linux with a
+session bus to reach the desktop's notification server. On the web, Linux and Windows a
+scheduled one shows only while the app runs. True does not mean the user allowed them:
+use_notification_permission says that.
 
 ### notifications_read_permission
 

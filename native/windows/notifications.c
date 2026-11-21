@@ -151,6 +151,8 @@ static void CALLBACK answer(HWND window, UINT message, UINT_PTR timer, DWORD tim
     ui_native_emit("notifications", permission());
 }
 
+int notifications_native_supported(void) { return 1; }
+
 void notifications_check(void) {
     if (ensureOwner()) SetTimer(owner, 0x7fff0000, 0, answer);
     else ui_native_emit("notifications", permission());

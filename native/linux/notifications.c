@@ -83,6 +83,10 @@ static void answered(GObject *source, GAsyncResult *result, gpointer data) {
     if (reply) g_variant_unref(reply);
 }
 
+// notifications_supported: a session bus to reach a notification server on. Whether one
+// answers is notifications_check's.
+int notifications_native_supported(void) { return busConnect() != NULL; }
+
 // Whether a notification server answers: GetServerInformation, which also starts one that
 // D-Bus activates.
 void notifications_check(void) {

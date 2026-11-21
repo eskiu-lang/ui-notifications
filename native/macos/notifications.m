@@ -42,6 +42,8 @@ UI_NATIVE_SETUP(notifications) {
     UNUserNotificationCenter.currentNotificationCenter.delegate = shared;
 }
 
+int notifications_native_supported(void) { return 1; }
+
 void notifications_check(void) {
     [UNUserNotificationCenter.currentNotificationCenter getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings *settings) {
         emitPermission(settings.authorizationStatus);

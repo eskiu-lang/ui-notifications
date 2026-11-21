@@ -24,6 +24,10 @@ void notifications_native_schedule(string id, string title, string body, int sec
 
 void notifications_native_cancel(string id) { String_from(&cancelled, id); }
 
+// What the desktop's native side says about the platform (the test runs on a desktop).
+int supported_answer = 1;
+int notifications_native_supported() { return supported_answer; }
+
 string notifications_take_opened() {
     String_from(&handed, pending.data == null ? "" : pending.data);
     String_clear(&pending);
@@ -111,8 +115,10 @@ int main() {
     check(String_eq_cstr(&shown, "denied") == 1, "denied renders");
     ui_shutdown();
     mounted.free();
-    // No notifications on the desktop, said before asking.
-    check(!notifications_supported(), "no notifications on the desktop");
+    // On the desktop the native side answers, before asking.
+    check(notifications_supported(), "notifications on this desktop");
+    supported_answer = 0;
+    check(!notifications_supported(), "none where the native side says so");
     printf("PASS notifications\n");
     String_free(&shown); String_free(&opened_ids); String_free(&scheduled); String_free(&cancelled);
     String_free(&pending); String_free(&handed);
