@@ -20,6 +20,24 @@ extern void notifications_native_schedule(string id, string title, string body, 
 extern void notifications_native_cancel(string id);
 extern string notifications_take_opened();
 
+// The platform's side of notifications_supported on the web (native/web): 1 when the browser
+// has the Notification API.
+extern int notifications_native_supported();
+
+// Whether the platform can show this package's notifications, known before asking: true on
+// iOS and Android, in a browser with the Notification API (there only while the page is open),
+// false on the desktop. True does not mean the user allowed them: use_notification_permission
+// says that.
+bool notifications_supported() {
+#if defined(__ANDROID__) || defined(TARGET_OS_IOS)
+    return true;
+#elif defined(__wasm__)
+    return notifications_native_supported() != 0;
+#else
+    return false;
+#endif
+}
+
 // What the platform said last about the permission.
 int notifications_permission;
 

@@ -111,6 +111,8 @@ int main() {
     check(String_eq_cstr(&shown, "denied") == 1, "denied renders");
     ui_shutdown();
     mounted.free();
+    // No notifications on the desktop, said before asking.
+    check(!notifications_supported(), "no notifications on the desktop");
     printf("PASS notifications\n");
     String_free(&shown); String_free(&opened_ids); String_free(&scheduled); String_free(&cancelled);
     String_free(&pending); String_free(&handed);

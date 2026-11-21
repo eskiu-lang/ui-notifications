@@ -2,6 +2,7 @@
 // externs. A scheduled notification is a timer in the page, so it shows only while the page is
 // open; a click on it focuses the page and tells the app.
 mergeInto(LibraryManager.library, {
+  notifications_native_supported: function() { return typeof window !== 'undefined' && 'Notification' in window ? 1 : 0; },
   notifications_check: function() {
     const state = !('Notification' in window) ? 'denied'
       : Notification.permission === 'granted' ? 'allowed' : Notification.permission === 'denied' ? 'denied' : 'notasked';
