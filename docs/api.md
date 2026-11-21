@@ -22,6 +22,17 @@ enum NotificationPermission { NotificationsChecking, NotificationsNotAsked, Noti
 Whether the app may show notifications: not known yet (the platform has not answered),
 never asked, allowed, or denied.
 
+### notifications_supported
+
+```eskiu
+bool notifications_supported()
+```
+
+Whether the platform can show this package's notifications, known before asking: true on
+iOS and Android, in a browser with the Notification API (there only while the page is open),
+false on the desktop. True does not mean the user allowed them: use_notification_permission
+says that.
+
 ### notifications_read_permission
 
 ```eskiu
