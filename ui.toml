@@ -5,3 +5,6 @@ frameworks = ["UserNotifications"]
 [android]
 permissions = ["android.permission.POST_NOTIFICATIONS"]
 receivers = ["org.eskiu.notifications.NotificationAlarm"]
+
+[macos]
+frameworks = ["UserNotifications"]
